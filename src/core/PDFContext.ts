@@ -47,6 +47,7 @@ const byAscendingObjectNumber = (
 class PDFContext {
   static create = () => new PDFContext();
 
+  isValidForModification: boolean; // Sewunity extension
   largestObjectNumber: number;
   header: PDFHeader;
   trailerInfo: {
@@ -69,6 +70,8 @@ class PDFContext {
 
     this.indirectObjects = new Map();
     this.rng = SimpleRNG.withSeed(1);
+
+    this.isValidForModification = true; // Sewunity extension
   }
 
   assign(ref: PDFRef, object: PDFObject): void {

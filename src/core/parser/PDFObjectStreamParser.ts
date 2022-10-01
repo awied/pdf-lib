@@ -29,6 +29,7 @@ class PDFObjectStreamParser extends PDFObjectParser {
     this.objectCount = dict.lookup(PDFName.of('N'), PDFNumber).asNumber();
   }
 
+  // Includes Sewunity extension
   async parseIntoContext(): Promise<void> {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFObjectStreamParser', 'parseIntoContext');
@@ -42,6 +43,18 @@ class PDFObjectStreamParser extends PDFObjectParser {
       const object = this.parseObject();
       const ref = PDFRef.of(objectNumber, 0);
       this.context.assign(ref, object);
+      
+      // Sewunity extension
+      // Upon parsing a document, BaseParse.parseRawNumber() checks
+      // whether the number exceeds a certain threshold. If if yes, 
+      // we cannot add the Sewunity watermark since the PDF might
+      // become corrrupt. We set flag isValidForModification into 
+      // the context so that we can validate the flag once document
+      // has been parsed.
+      if (this.hasNumberTooLargeWarning && this.context.isValidForModification) {
+        this.context.isValidForModification = false
+      }
+
       if (this.shouldWaitForTick()) await waitForTick();
     }
   }

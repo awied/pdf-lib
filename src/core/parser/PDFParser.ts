@@ -170,6 +170,17 @@ class PDFParser extends PDFObjectParser {
     ) {
       PDFXRefStreamParser.forStream(object).parseIntoContext();
     } else {
+      // Sewunity extension
+      // Upon parsing a document, BaseParse.parseRawNumber() checks
+      // whether the number exceeds a certain threshold. If if yes, 
+      // we cannot add the Sewunity watermark since the PDF might
+      // become corrrupt. We set flag isValidForModification into 
+      // the context so that we can validate the flag once document
+      // has been parsed.
+      if (this.hasNumberTooLargeWarning && this.context.isValidForModification) {
+        this.context.isValidForModification = false
+      }
+      
       this.context.assign(ref, object);
     }
 

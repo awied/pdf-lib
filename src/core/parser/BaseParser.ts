@@ -12,9 +12,12 @@ class BaseParser {
   protected readonly bytes: ByteStream;
   protected readonly capNumbers: boolean;
 
+  protected hasNumberTooLargeWarning: boolean; // Sewunity extension
+
   constructor(bytes: ByteStream, capNumbers = false) {
     this.bytes = bytes;
     this.capNumbers = capNumbers;
+    this.hasNumberTooLargeWarning = false; // Sewunity extension
   }
 
   protected parseRawInt(): number {
@@ -62,6 +65,8 @@ class BaseParser {
     }
 
     if (numberValue > Number.MAX_SAFE_INTEGER) {
+      this.hasNumberTooLargeWarning = true; // Sewunity extension
+
       if (this.capNumbers) {
         const msg = `Parsed number that is too large for some PDF readers: ${value}, using Number.MAX_SAFE_INTEGER instead.`;
         console.warn(msg);

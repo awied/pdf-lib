@@ -58,6 +58,7 @@ class PDFXRefStreamParser {
     }
   }
 
+  // Includes Sewunity extension
   parseIntoContext(): Entry[] {
     if (this.alreadyParsed) {
       throw new ReparseError('PDFXRefStreamParser', 'parseIntoContext');
